@@ -1,8 +1,40 @@
 <?php
 
+use App\Models\User;
+use Livewire\WithPagination;
 use Livewire\Volt\Component;
+use Illuminate\Database\Eloquent\Builder;
 
 new class extends Component {
+    use WithPagination;
+ 
+    public ?int $quantity = 10;
+ 
+    public ?string $search = null;
+
+    public function delete(string $id): void
+    {
+        dd($id);
+    }
+ 
+    public function with(): array
+    {
+        return [
+            'headers' => [
+                ['index' => 'id', 'label' => '#'],
+                ['index' => 'name', 'label' => 'Member'],
+                ['index' => 'action'], 
+            ],
+            'rows' => User::query()
+                ->when($this->search, function (Builder $query) {
+                    return $query->where('name', 'like', "%{$this->search}%");
+                })
+                ->paginate($this->quantity)
+                ->withQueryString(),
+            'type' => 'data', 
+        ];
+    }
+
     public function placeholder()
     {
         return <<<'HTML'
@@ -18,5 +50,21 @@ new class extends Component {
 }; ?>
 
 <div>
-    //
+    <x-mc-table :$headers :$rows filter paginate id="users">
+        <!-- The $row represents the instance of \App\Model\User of each row -->
+        @interact('column_action', $row) 
+            <x-mc-button.circle color="red"
+                             icon="trash"
+                             wire:click="delete('{{ $row->id }}')" />
+        @endinteract
+    </x-mc-table>
+ 
+    <!-- 2: You can pass extra variables to the directive -->
+    <x-mc-table :$headers :$rows filter paginate id="users">
+        @interact('column_action', $row, $type) 
+            <x-mc-button.circle color="red"
+                             icon="trash"
+                             wire:click="delete('{{ $row->id }}', '{{ $type }}')" />
+        @endinteract
+    </x-mc-table>
 </div>
