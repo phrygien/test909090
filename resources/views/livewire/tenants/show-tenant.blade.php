@@ -3,20 +3,47 @@
 use App\Models\User;
 use Livewire\WithPagination;
 use Livewire\Volt\Component;
+use TallStackUi\Traits\Interactions; 
 use Illuminate\Database\Eloquent\Builder;
 
 new class extends Component {
     use WithPagination;
+    use Interactions; 
  
-    public ?int $quantity = 1;
+    public ?int $quantity = 5;
  
     public ?string $search = null;
 
+    public ?string $userIdToDelete = null; 
+
     public function delete(string $id): void
     {
-        dd($id);
+    // Store the user id to delete
+    $this->userIdToDelete = $id;
+        // 1. The methods `confirm()` and `cancel()` are optional.
+    $this->dialog()
+        ->question('Warning!', 'Are you sure?')
+        ->confirm('Confirm', 'confirmed','Confirmed Successfully')
+        ->cancel('Cancel', 'cancelled', 'Cancelled Successfully')
+        ->send();
+        
     }
  
+    public function confirmed(string $message): void
+    {
+        // Retrieve the stored user id to delete
+        $id = $this->userIdToDelete;
+        // Delete the user
+        User::findOrFail($id)->delete();
+
+        $this->dialog()->success('Success', $message)->send();
+    }
+
+    public function cancelled(string $message): void
+    {
+        $this->dialog()->error('Cancelled', $message)->send();
+    }
+
     public function with(): array
     {
         return [
@@ -53,7 +80,12 @@ new class extends Component {
     <x-mc-table :$headers :$rows filter paginate id="users">
         <!-- The $row represents the instance of \App\Model\User of each row -->
         @interact('column_action', $row) 
-            <x-mc-button.circle color="red"
+            <x-mc-button color="red"
+                            class="float-right ml-4"
+                             icon="trash"
+                             wire:click="delete('{{ $row->id }}')" />
+                             <x-mc-button color="amber"
+                             class="float-right ml-4"
                              icon="trash"
                              wire:click="delete('{{ $row->id }}')" />
         @endinteract
