@@ -60,7 +60,8 @@ new class extends Component {
         return [
             'headers' => [
                 ['index' => 'id', 'label' => '#'],
-                ['index' => 'name', 'label' => 'Member'],
+                ['index' => 'name', 'label' => 'Nom et prenom'],
+                ['index' => 'email', 'label' => 'Adresse email'],
                 ['index' => 'action'], 
             ],
             'rows' => User::query()
@@ -92,11 +93,9 @@ new class extends Component {
         <!-- The $row represents the instance of \App\Model\User of each row -->
         @interact('column_action', $row) 
             <x-mc-button color="red"
-                            class="float-right ml-4"
                              icon="trash"
                              wire:click="delete('{{ $row->id }}')" />
                              <x-mc-button color="amber"
-                             class="float-right ml-4"
                              icon="trash"
                              wire:click="delete('{{ $row->id }}')" />
         @endinteract
