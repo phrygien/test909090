@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Builder;
 new class extends Component {
     use WithPagination;
  
-    public ?int $quantity = 10;
+    public ?int $quantity = 1;
  
     public ?string $search = null;
 
