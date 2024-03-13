@@ -60,11 +60,11 @@ new class extends Component {
     </x-mc-table>
  
     <!-- 2: You can pass extra variables to the directive -->
-    <x-mc-table :$headers :$rows filter paginate id="users">
+    {{-- <x-mc-table :$headers :$rows filter paginate id="users">
         @interact('column_action', $row, $type) 
             <x-mc-button.circle color="red"
                              icon="trash"
                              wire:click="delete('{{ $row->id }}', '{{ $type }}')" />
         @endinteract
-    </x-mc-table>
+    </x-mc-table> --}}
 </div>
