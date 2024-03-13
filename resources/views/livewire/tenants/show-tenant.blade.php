@@ -34,14 +34,25 @@ new class extends Component {
         // Retrieve the stored user id to delete
         $id = $this->userIdToDelete;
         // Delete the user
-        User::findOrFail($id)->delete();
+        //User::findOrFail($id)->delete();
 
-        $this->dialog()->success('Success', $message)->send();
+        $this->banner()
+            ->close()
+            ->success('User deleted successfuly !.')
+            ->leave(5)
+            ->send();
+
+        //$this->dialog()->success('Success', $message)->send();
     }
 
     public function cancelled(string $message): void
     {
-        $this->dialog()->error('Cancelled', $message)->send();
+            $this->banner()
+            ->close()
+            ->error('This is a banner dispatched through Livewire. Will disappear in 5 seconds.')
+            ->leave(5)
+            ->send();
+        //$this->dialog()->error('Cancelled', $message)->send();
     }
 
     public function with(): array
